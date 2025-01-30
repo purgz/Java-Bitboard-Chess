@@ -1,27 +1,22 @@
 public class BitBoard {
 
-    public long bitboard;
 
-    public BitBoard(long bitboard){
-
-        this.bitboard = bitboard;
-    }
-
-    public long getBit(int square){
+    public static long getBit(long bitboard, int square){
         return bitboard & (1L << square);
     }
 
-    public void setBit(int square){
-        this.bitboard |= (1L << square);
+    public static long setBit(long bitboard, int square){
+        bitboard |= (1L << square); return bitboard;
     }
 
-    public void removeBit(int square){
-        if (getBit(square) != 0)
-            this.bitboard ^= (1L << square);
+    public static long removeBit(long bitboard,int square){
+        if (getBit(bitboard, square) != 0)
+            bitboard ^= (1L << square);
+        return bitboard;
     }
 
 
-    public void printBitboard(){
+    public static void printBitboard(long bitboard){
 
         for (int rank = 0; rank < 8; rank++){
 
@@ -35,7 +30,7 @@ public class BitBoard {
 
                 //shift by square to get current bit
                 //self bitwise and to get 0 or 1
-                long bit = getBit(square);
+                long bit = getBit(bitboard, square);
 
                 System.out.print(bit != 0 ? 1 + " " : 0 + " ");
             }

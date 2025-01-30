@@ -1,5 +1,32 @@
 public class Main {
 
+    public static final int WHITE = 0;
+    public static final int BLACK = 1;
+
+
+
+    /*
+        8  0 1 1 1 1 1 1 1
+        7  0 1 1 1 1 1 1 1
+        6  0 1 1 1 1 1 1 1
+        5  0 1 1 1 1 1 1 1
+        4  0 1 1 1 1 1 1 1
+        3  0 1 1 1 1 1 1 1
+        2  0 1 1 1 1 1 1 1
+        1  0 1 1 1 1 1 1 1
+     */
+
+    //constants precomputed, e.g. above for the not A file
+    //can use these masks to remove edge cases where pieces would wrap attacks across the edges of the board
+    public static final long NOT_A_FILE = -72340172838076674l;
+    public static final long NOT_H_FILE = 9187201950435737471l;
+    public static final long NOT_HG_FILE = 4557430888798830399l;
+    public static final long NOT_AB_FILE = -217020518514230020l;
+
+
+    //pawn attacks table [side][square]
+    static final long pawnAttacks[][] = new long[2][64];
+
     public static void main(String[] args) {
 
 
@@ -7,18 +34,53 @@ public class Main {
 
         long bitboard = 0b0000000000000000000000000000000000000000000000000000000000000100L;
 
+        BitBoard.printBitboard(maskPawnAttacks(Squares.a4.ordinal(), BLACK));
 
-        BitBoard bitBoard = new BitBoard(bitboard);
 
-        bitBoard.printBitboard();
+        initialiseLeapAttacks();
 
-        bitBoard.setBit(Squares.e2.ordinal());
-        bitBoard.printBitboard();
-        bitBoard.removeBit(Squares.e2.ordinal());
-        bitBoard.printBitboard();
-        bitBoard.removeBit(Squares.e2.ordinal());
-        bitBoard.printBitboard();
+        for (int i = 0; i < 64; i ++){
+            BitBoard.printBitboard(pawnAttacks[BLACK][i]);
 
+        }
+
+    }
+
+
+    public static void initialiseLeapAttacks(){
+
+        //e.g pawn, knight, king
+
+        for (int square = 0; square < 64; square++){
+
+            //pawn
+            pawnAttacks[WHITE][square] = maskPawnAttacks(square, WHITE);
+            pawnAttacks[BLACK][square] = maskPawnAttacks(square, BLACK);
+        }
+    }
+
+    public static long maskPawnAttacks(int square, int side){
+
+        //piece bitboard
+        long bitboard = 0l;
+
+
+        //attack bitboard
+        long attackBitboard = 0l;
+
+        //set pawn position on the bitboard
+        bitboard = BitBoard.setBit(bitboard,square);
+
+
+        if (side == WHITE){
+            attackBitboard |= (((bitboard >>> 7) & NOT_A_FILE)
+                                     | ((bitboard >>> 9) & NOT_H_FILE));
+        } else {
+            attackBitboard |= (((bitboard << 7) & NOT_H_FILE)
+                                     | ((bitboard << 9) & NOT_A_FILE));
+        }
+
+        return attackBitboard;
     }
 
     enum Squares {
