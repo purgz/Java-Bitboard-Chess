@@ -35,11 +35,25 @@ public class Main {
 
         Engine myChessEngine = new Engine();
 
+        long blockers = 0l;
+
+        blockers = BitBoard.setBit(blockers,Squares.d5.ordinal());
+        //blockers = BitBoard.setBit(blockers,Squares.c5.ordinal());
+
         for (int i = 0; i < 64; i ++){
 
-            // BitBoard.printBitboard(myChessEngine.kingAttacks[i]);
+           // BitBoard.printBitboard(myChessEngine.kingAttacks[i]);
+           // BitBoard.printBitboard(Engine.bishopAttacks(i, blockers));
+
         }
 
+        //we have bitcount in Long.bitCount
+        // for least signif bit index, use number of trailing zeros!
+        BitBoard.printBitboard(blockers);
+        System.out.println(Long.bitCount(blockers));
+        System.out.println(Long.numberOfTrailingZeros(blockers));
+        //to convert coord to enum
+        System.out.println(Squares.values()[Long.numberOfTrailingZeros(blockers)]);
     }
 
 

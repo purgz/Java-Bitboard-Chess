@@ -26,6 +26,10 @@ public class Engine {
 
     public static final long kingAttacks[] = new long[64];
 
+    //MAGIC
+    public static final long bishopOccupancyMask[] = new long[64];
+
+    public static final long rookOccupancyMask[] = new long[64];
 
     public static void initialiseLeapAttacks(){
 
@@ -37,6 +41,149 @@ public class Engine {
             knightAttacks[square] = knightAttackMask(square);
             kingAttacks[square] = kingAttackMask(square);
         }
+    }
+
+
+    public static long bishopAttacks(int square, long blockers){
+
+
+        long attacks = 0l;
+
+
+        int row; int file;
+
+        int nextRow = square / 8;
+        int nextFile = square % 8;
+
+        for (row = nextRow + 1, file = nextFile + 1; row < 7 && file < 7; row++, file++){
+            //1l << square - shifts a 1 bit into the given square
+            attacks |= (1l << (row * 8 + file));
+            if (((1l << (row * 8 + file)) & blockers) > 0){
+                break;
+            }
+        }
+        for (row = nextRow - 1, file = nextFile + 1; row > 0 && file < 7; row--, file++){
+            //1l << square - shifts a 1 bit into the given square
+            attacks |= (1l << (row * 8 + file));
+            if (((1l << (row * 8 + file)) & blockers) > 0){
+                break;
+            }
+        }
+        for (row = nextRow + 1, file = nextFile - 1; row < 7 && file > 0; row++, file--){
+            //1l << square - shifts a 1 bit into the given square
+            attacks |= (1l << (row * 8 + file));
+            if (((1l << (row * 8 + file)) & blockers) > 0){
+                break;
+            }
+        }
+        for (row = nextRow - 1, file = nextFile - 1; row > 0 && file > 0; row--, file--){
+            //1l << square - shifts a 1 bit into the given square
+            attacks |= (1l << (row * 8 + file));
+            if (((1l << (row * 8 + file)) & blockers) > 0){
+                break;
+            }
+        }
+
+
+        return attacks;
+    }
+
+    public static long rookAttacks(int square, long blockers){
+
+        long attacks = 0l;
+
+        int row; int file;
+
+        int nextRow = square / 8;
+        int nextFile = square % 8;
+
+        for (row = nextRow + 1; row <= 7; row++){
+            //1l << square - shifts a 1 bit into the given square
+            attacks |= (1l << (row * 8 + nextFile));
+            if (((1l << (row * 8 + nextFile)) & blockers) > 0){
+                break;
+            }
+        }
+        for (row = nextRow - 1; row >= 0; row--){
+            //1l << square - shifts a 1 bit into the given square
+            attacks |= (1l << (row * 8 + nextFile));
+            if (((1l << (row * 8 + nextFile)) & blockers) > 0){
+                break;
+            }
+        }
+        for (file = nextFile + 1;file <= 7; file++){
+            //1l << square - shifts a 1 bit into the given square
+            attacks |= (1l << (nextRow * 8 + file));
+            if (((1l << (nextRow * 8 + file)) & blockers) > 0){
+                break;
+            }
+        }
+        for ( file = nextFile - 1; file >= 0;  file--){
+            //1l << square - shifts a 1 bit into the given square
+            attacks |= (1l << (nextRow * 8 + file));
+            if (((1l << (nextRow * 8 + file)) & blockers) > 0){
+                break;
+            }
+        }
+        return attacks;
+    }
+
+    public static long rookOccupancy(int square){
+        long occupancy = 0l;
+
+        int row; int file;
+
+        int nextRow = square / 8;
+        int nextFile = square % 8;
+
+        for (row = nextRow + 1; row < 7; row++){
+            //1l << square - shifts a 1 bit into the given square
+            occupancy |= (1l << (row * 8 + nextFile));
+        }
+        for (row = nextRow - 1; row > 0; row--){
+            //1l << square - shifts a 1 bit into the given square
+            occupancy |= (1l << (row * 8 + nextFile));
+        }
+        for (file = nextFile + 1;file < 7; file++){
+            //1l << square - shifts a 1 bit into the given square
+            occupancy |= (1l << (nextRow * 8 + file));
+        }
+        for ( file = nextFile - 1; file > 0;  file--){
+            //1l << square - shifts a 1 bit into the given square
+            occupancy |= (1l << (nextRow * 8 + file));
+        }
+        return occupancy;
+    }
+
+    public static long bishopOccupancy(int square){
+
+        long occupancy = 0l;
+
+
+        int row; int file;
+
+        int nextRow = square / 8;
+        int nextFile = square % 8;
+
+        for (row = nextRow + 1, file = nextFile + 1; row < 7 && file < 7; row++, file++){
+            //1l << square - shifts a 1 bit into the given square
+            occupancy |= (1l << (row * 8 + file));
+        }
+        for (row = nextRow - 1, file = nextFile + 1; row > 0 && file < 7; row--, file++){
+            //1l << square - shifts a 1 bit into the given square
+            occupancy |= (1l << (row * 8 + file));
+        }
+        for (row = nextRow + 1, file = nextFile - 1; row < 7 && file > 0; row++, file--){
+            //1l << square - shifts a 1 bit into the given square
+            occupancy |= (1l << (row * 8 + file));
+        }
+        for (row = nextRow - 1, file = nextFile - 1; row > 0 && file > 0; row--, file--){
+            //1l << square - shifts a 1 bit into the given square
+            occupancy |= (1l << (row * 8 + file));
+        }
+
+
+        return occupancy;
     }
 
     public static long kingAttackMask(int square){
