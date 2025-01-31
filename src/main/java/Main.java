@@ -27,61 +27,23 @@ public class Main {
     //pawn attacks table [side][square]
     static final long pawnAttacks[][] = new long[2][64];
 
+    static final long knightAttacks[] = new long[64];
+
+    static final long kingAttacks[] = new long[64];
+
     public static void main(String[] args) {
 
-
-        System.out.println("******");
-
-        long bitboard = 0b0000000000000000000000000000000000000000000000000000000000000100L;
-
-        BitBoard.printBitboard(maskPawnAttacks(Squares.a4.ordinal(), BLACK));
-
-
-        initialiseLeapAttacks();
+        Engine myChessEngine = new Engine();
 
         for (int i = 0; i < 64; i ++){
-            BitBoard.printBitboard(pawnAttacks[BLACK][i]);
 
+            // BitBoard.printBitboard(myChessEngine.kingAttacks[i]);
         }
 
     }
 
 
-    public static void initialiseLeapAttacks(){
 
-        //e.g pawn, knight, king
-
-        for (int square = 0; square < 64; square++){
-
-            //pawn
-            pawnAttacks[WHITE][square] = maskPawnAttacks(square, WHITE);
-            pawnAttacks[BLACK][square] = maskPawnAttacks(square, BLACK);
-        }
-    }
-
-    public static long maskPawnAttacks(int square, int side){
-
-        //piece bitboard
-        long bitboard = 0l;
-
-
-        //attack bitboard
-        long attackBitboard = 0l;
-
-        //set pawn position on the bitboard
-        bitboard = BitBoard.setBit(bitboard,square);
-
-
-        if (side == WHITE){
-            attackBitboard |= (((bitboard >>> 7) & NOT_A_FILE)
-                                     | ((bitboard >>> 9) & NOT_H_FILE));
-        } else {
-            attackBitboard |= (((bitboard << 7) & NOT_H_FILE)
-                                     | ((bitboard << 9) & NOT_A_FILE));
-        }
-
-        return attackBitboard;
-    }
 
     enum Squares {
         a8, b8, c8, d8, e8, f8, g8, h8,
